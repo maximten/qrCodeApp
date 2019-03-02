@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\QrCodeWriterContract;
+use App\Adapters\QrCodeWriterAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,4 +27,13 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
+    /**
+     * All of the container singletons that should be registered.
+     *
+     * @var array
+     */
+    public $singletons = [
+        QrCodeWriterContract::class => QrCodeWriterAdapter::class,
+    ];
 }
