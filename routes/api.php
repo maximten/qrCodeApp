@@ -12,3 +12,4 @@
 */
 
 Route::post('qr/generate', 'API\QrCodeController@generate');
+Route::get('qr/{hash}', 'API\QrCodeController@getByHash');

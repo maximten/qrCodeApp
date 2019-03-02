@@ -7,13 +7,14 @@ use App\Http\Requests\GenerateQrCodeRequest;
 use App\Http\Controllers\Controller;
 use App\Models\QrCodeType;
 use App\Models\QrCode;
+use App\Http\Resources\QrCodeResource;
 
 class QrCodeController extends Controller
 {
     /**
      * Generate hash and qr code for given url and user type.
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Requests\GenerateQrCodeRequest
      */
     public function generate(GenerateQrCodeRequest $request)
     {
@@ -29,5 +30,17 @@ class QrCodeController extends Controller
         }
 
         return $qrCode->hash;
+    }
+
+    /**
+     * Get QrCode by hash
+     *
+     * @param string $hash
+     * @return array
+     */
+    public function getByHash(string $hash)
+    {
+        $qrCode = QrCode::getByHash($hash);
+        return new QrCodeResource($qrCode);
     }
 }
