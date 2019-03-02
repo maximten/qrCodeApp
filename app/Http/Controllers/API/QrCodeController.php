@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\GenerateQrCodeRequest;
+use App\Http\Requests\SetStatusRequest;
 use App\Http\Controllers\Controller;
 use App\Models\QrCodeType;
 use App\Models\QrCode;
@@ -43,4 +44,19 @@ class QrCodeController extends Controller
         $qrCode = QrCode::getByHash($hash);
         return new QrCodeResource($qrCode);
     }
+
+    /**
+     * Set status to qr code by hash
+     *
+     * @param SetStatusRequest $request
+     * @param string $hash
+     * @return void
+     */
+    public function setStatusByHash(SetStatusRequest $request, string $hash)
+    {
+        $qrCode = QrCode::getByHash($hash);
+        $qrCode->status = $request->status;
+        $qrCode->save();
+        return new QrCodeResource($qrCode);
+    } 
 }
