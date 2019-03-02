@@ -20,4 +20,15 @@ class QrCode extends Model
     {
         return $this->belongsTo(QrCodeType::class);
     }
+
+    /**
+     * Generate hash for model
+     *
+     * @return void
+     */
+    public function generateHash()
+    {
+        $this->hash = md5($this->type . $this->url);
+        return $this;
+    }
 }
