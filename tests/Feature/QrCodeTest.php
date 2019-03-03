@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use QrReader;
+use App\Models\QrCode;
 
 class QrCodeTest extends TestCase
 {
@@ -16,6 +16,11 @@ class QrCodeTest extends TestCase
      */
     public function testExample()
     {
+        $qrCodeModel = QrCode::where('url', 'http://example.com')->first();
+        if ($qrCodeModel) {
+            $qrCodeModel->delete();
+        }
+
         $response = $this->json('POST', '/api/qr/generate', [
             'url' => 'not a site',
             'status' => 1,
@@ -29,6 +34,21 @@ class QrCodeTest extends TestCase
             'type' => 'user',
         ]);
         $response->assertStatus(200);
-        $link = $response->content();
+
+        $qrCodeModel = QrCode::where('url', 'http://example.com')->first();
+        $this->assertNotNull($qrCodeModel);
+
+        $response = $this->get("/api/qr/{$qrCodeModel->hash}");
+        $response->assertStatus(200);
+
+        $response = $this->json('PUT', "/api/qr/status/{$qrCodeModel->hash}", [
+            'status' => 0,
+        ]);
+        $response->assertStatus(200);
+
+        $qrCodeModel = QrCode::where('url', 'http://example.com')->first();
+        $this->assertEquals(0, $qrCodeModel->status);
+
+        $qrCodeModel->delete();
     }
 }
